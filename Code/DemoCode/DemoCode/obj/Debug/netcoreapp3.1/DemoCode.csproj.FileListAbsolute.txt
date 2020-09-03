@@ -1,0 +1,9 @@
+C:\AutoFixture_How\Code\DemoCode\DemoCode\bin\Debug\netcoreapp3.1\DemoCode.deps.json
+C:\AutoFixture_How\Code\DemoCode\DemoCode\bin\Debug\netcoreapp3.1\DemoCode.dll
+C:\AutoFixture_How\Code\DemoCode\DemoCode\bin\Debug\netcoreapp3.1\DemoCode.pdb
+C:\AutoFixture_How\Code\DemoCode\DemoCode\obj\Debug\netcoreapp3.1\DemoCode.csprojAssemblyReference.cache
+C:\AutoFixture_How\Code\DemoCode\DemoCode\obj\Debug\netcoreapp3.1\DemoCode.AssemblyInfoInputs.cache
+C:\AutoFixture_How\Code\DemoCode\DemoCode\obj\Debug\netcoreapp3.1\DemoCode.AssemblyInfo.cs
+C:\AutoFixture_How\Code\DemoCode\DemoCode\obj\Debug\netcoreapp3.1\DemoCode.csproj.CoreCompileInputs.cache
+C:\AutoFixture_How\Code\DemoCode\DemoCode\obj\Debug\netcoreapp3.1\DemoCode.dll
+C:\AutoFixture_How\Code\DemoCode\DemoCode\obj\Debug\netcoreapp3.1\DemoCode.pdb
