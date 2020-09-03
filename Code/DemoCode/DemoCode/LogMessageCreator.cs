@@ -9,12 +9,11 @@ namespace DemoCode
 {
     public class LogMessageCreator
     {
-        public LogMessage Create(string message, DateTime when, Guid Id, MessageType type)
+        public LogMessage Create(string message, DateTime when)
         {
             return new LogMessage
             {
-                Id = Id,
-                MessageType = type,
+             
                 Year = when.Year,
                 message = message
             };
