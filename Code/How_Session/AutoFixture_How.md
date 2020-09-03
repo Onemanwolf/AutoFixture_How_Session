@@ -273,19 +273,21 @@ Now refactor the test are first test method TypeJoinerJoinTypeString using AutoF
 
 Nice work now we have a test that is less brittle and use anonymous data instead of literal values.
 
-Use anonymous values only when they don't have a specific meaning to the SUT.
+### Anonymous Values Rules of the road
 
->"For input where the value holds a particular meaning in the context of the SUT,
-you will still need to hand-pick values as always. E.g. if the input is expected to
-be an XML string conforming to a particular schema ,a GUID string makes no sense"
- _**Mark Seemann**_
-[Blog](https://blog.ploeh.dk/2009/03/05/ConstrainedNon-Determinism)
+- Use anonymous values only when they don't have a specific meaning to the SUT.
 
-A given test must execute the same production code every time it is executed.
+- A given test must execute the same production code every time it is executed.
 
-Anonymous values should not affect logical program flow.
+- Anonymous values should not affect logical program flow.
 
-Install NuGet Package AutoFixture.SeedExtensions
+> "For input where the value holds a particular meaning in the context of the SUT,
+> you will still need to hand-pick values as always. E.g. if the input is expected to
+> be an XML string conforming to a particular schema ,a GUID string makes no sense"
+> _**Mark Seemann**_
+> [Blog](https://blog.ploeh.dk/2009/03/05/ConstrainedNon-Determinism)
+
+_If you haven't now would be a good time to Install NuGet Package AutoFixture.SeedExtensions_
 
 ### Anonymous Types
 
@@ -342,11 +344,7 @@ sut.Fullname.Should().Be(firstName + ' ' + lastName)
 
 ```
 
-
-
 1. Create `LogMessageCreatorShould` test class
-
-
 
 ```C#
         public class LogMessageCreatorShould
@@ -358,24 +356,7 @@ sut.Fullname.Should().Be(firstName + ' ' + lastName)
 
 ```
 
-2. Create test method lets call it `CreateLogMessage`.
-
-
-```C#
-        [Fact]
-        public void CreateLogMessage()
-        {
-            var sut = new LogMessageCreator();
-
-            DateTime logTime = new DateTime(2020, 9, 3);
-
-            LogMessage result = sut.Create("I want a sandwhich", logTime);
-
-
-            Assert.Equal(logTime.Year, result.Year);
-
-
-        }
+We will be testing this method which requires a string and a DateTime as parameters.
 
 ```C#
 
@@ -390,25 +371,42 @@ sut.Fullname.Should().Be(firstName + ' ' + lastName)
         }
 ```
 
-Create DateTime
+2. Create test method lets call it `CreateLogMessage`.
 
-```C#
+````C#
         [Fact]
         public void CreateLogMessage()
         {
             var sut = new LogMessageCreator();
-            var fixture = new Fixture();
+
             DateTime logTime = new DateTime(2020, 9, 3);
-            DateTime logTime = fixture.Create<DateTime>();
+
             LogMessage result = sut.Create("I want a sandwhich", logTime);
 
-            //Add Id Guid
-            var Id = fixture.Create<Guid>();
+
+            Assert.Equal(logTime.Year, result.Year);
 
 
-            //Add Message Type
-            var type = fixture.Create<MessageType>();
-            LogMessage result = sut.Create("", logTime);
+        }
+
+
+
+
+Create DateTime
+
+```C#
+       [Fact]
+        public void CreateLogMessage()
+        {
+            var sut = new LogMessageCreator();
+            var fixture = new Fixture();
+
+            //Add anonymous date time
+            DateTime logTime = fixture.Create<DateTime>();
+
+
+            //Add anonymous string
+            LogMessage result = sut.Create(fixture.Create<string>(), logTime, Id);
 
 
             Assert.Equal(logTime.Year, result.Year);
@@ -417,11 +415,11 @@ Create DateTime
         }
 
 
-```
+````
+
 ### Generating Enum and GUIDs
 
 1. Add Guid Id Property to the `LogMessage` class.
-
 
 ```C#
 
@@ -434,6 +432,7 @@ Create DateTime
     }
 
 ```
+
 Add the parameter for the Guid Id to the Create method.
 
 ```C#
@@ -471,6 +470,7 @@ Add the parameter for the Guid Id to the Create method.
 
 
 ```
+
 Add Enum MessageType to the LogMessage Class
 
 ```C#
@@ -483,7 +483,6 @@ Add Enum MessageType to the LogMessage Class
         Exception
     }
 ```
-
 
 ```C#
 
@@ -524,8 +523,6 @@ Add Enum MessageType to the LogMessage Class
 
 ```
 
-
-
 ```C#
         public LogMessage Create(string message, DateTime when, Guid Id, MessageType type)
         {
@@ -539,7 +536,6 @@ Add Enum MessageType to the LogMessage Class
         }
 ```
 
-
 ```C#
 
 public class LogMessage
@@ -552,13 +548,204 @@ public class LogMessage
     }
 
 ```
-Add new property to the LogMessage Class Id of type Guid
 
-Go to the LogCreatorShould test class
+## Create Email address with AutoFixture
 
-Add a local var to the CreateLogMessage test method
-var Id = fixture.Create<Guid>();
+1. Now lets create a Email Message Class right click add new class name it `EmailMessage.cs`.
 
-Update the sut.Create()
+```C#
 
-      LogMessage result = sut.Create(fixture.Create<string>(), logTime, Id, type);
+                 public class EmailMessage
+                 {
+                 public Guid Id { get; set; }
+                 public string ToAddress { get; set; }
+                 public string FromAddress { get; set; }
+                 public string Subject { get; set; }
+                 public string Body { get; set; }
+                 public bool IsImportant { get; set; }
+
+
+                 public EmailMessage(Guid id,
+                            string toAddress,
+                            string fromAddress,
+                            string subject,
+                            string body,
+                            bool isImportant)
+                {
+                  Id = id;
+                  ToAddress = toAddress;
+                  FromAddress = fromAddress;
+                  Subject = subject;
+                  Body = body;
+                  IsImportant = isImportant;
+                }
+
+
+
+         }
+
+```
+
+2. Now add a test class to the test project call it EmailMessageShould.
+
+```C#
+                public class EmailMessageShould
+                {
+
+
+                }
+
+```
+
+3. Next we need to test we can construct an email message with all the parameters created with AutoFixture we will focus on Email Address for now we need the `using System.Net.Mail;` to we can use `MailAddress`.
+
+```#
+                using System.Net.Mail;
+```
+
+4. Add the to address for the email with by first creating it with `MailAddress toAddress = fixture.Create<MailAddress>();`.
+
+5. Now add the from address in the same way `MailAddress fromAddress = fixture.Create<MailAddress>();`
+   `
+6. Now add the rest of the constructor parameters Id with ` var Id = fixture.Create<Guid>();` the subject with `and the message body with` finally the IsImportant bool with `` now assert all your values.
+
+> Challenge try different ways of using the fixture how could you improve this test?
+
+> Notice the use of the AutoFixture.SeedExtensions ` fixture.Create<string>("Subject"),` by adding the string `"Subject"`create string fixture method prepends and string to the auto generated string.
+
+```C#
+                public class EmailMessageShould
+                {
+
+                    [Fact]
+                    public void EmailMessageCreate()
+                    {
+                        var fixture = new Fixture();
+
+
+                        MailAddress toAddress = fixture.Create<MailAddress>();
+                        MailAddress fromAddress = fixture.Create<MailAddress>();
+
+                        var Id = fixture.Create<Guid>();
+                        var sut = new EmailMessage(
+                            Id,
+                            toAddress.Address,
+                            fromAddress.Address,
+                            fixture.Create<string>("Subject"),
+                            fixture.Create<string>("Body"),
+                            fixture.Create<bool>());
+
+                        sut.Id.Should().Be(Id);
+                        sut.ToAddress.Should().Be(toAddress.Address);
+                        sut.FromAddress.Should().Be(fromAddress.Address);
+                        sut.Subject.Should().Contain("Subject");
+                        sut.Body.Should().Contain("Body");
+
+
+                }
+
+```
+
+## Create Sequence of String
+
+1. Lets create a new test Class in the test project just to play with some examples and call it `SequenceDemoShould.cs`.
+
+
+```C#
+         public class SequenceDemoShould
+    {
+
+    }
+```
+
+2. Now create a new test method call it `SequenceOfStrings`.
+
+```C#
+
+        [Fact]
+        public void SequenceOfStrings()
+        {
+            var fixture = new Fixture();
+            IEnumerable<string> list = fixture.CreateMany<string>();
+
+            var listCount = list;
+
+            listCount.Should().HaveCount(3);
+
+        }
+```
+
+Autofixture be default adds a count of 3 we can specify and  count by adding count number to the `CreateMany<string>(6);`
+
+
+```C#
+
+        [Fact]
+        public void SequenceOfStrings()
+        {
+            var fixture = new Fixture();
+            IEnumerable<string> list = fixture.CreateMany<string>(6);
+
+            var listCount = list;
+
+            listCount.Should().HaveCount(6);
+
+        }
+```
+
+Now Create another test method called `SequenceOfStringsAddToList`
+
+We can also add string to an existing list with the `fixture.AddManyTo(list);` method.
+
+```C#
+        [Fact]
+        public void SequenceOfStringsAddToList()
+        {
+             var fixture = new Fixture();
+             var list = new List<string>();
+
+
+             fixture.AddManyTo(list);
+
+             list.Should().HaveCount(3);
+
+
+        }
+```
+We can also control the count by adding
+
+```C#
+        [Fact]
+        public void SequenceOfStringsAddToList()
+        {
+             var fixture = new Fixture();
+             var list = new List<string>();
+
+
+             fixture.AddManyTo(list, 10);
+
+             list.Should().HaveCount(10);
+
+        }
+```
+
+We can also use a delegate to set to value
+
+```C#
+        [Fact]
+        public void SequenceOfStringsAddToListLambda()
+        {
+            var fixture = new Fixture();
+            var list = new List<string>();
+
+
+            fixture.AddManyTo(list, () => "hi");
+
+            list.Should().Contain("hi");
+            list.Should().HaveCount(3);
+
+        }
+```
+
+
+We can create objects
