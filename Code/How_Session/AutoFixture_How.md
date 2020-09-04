@@ -372,7 +372,7 @@ We will be testing this method which requires a string and a DateTime as paramet
 
 2. Create test method lets call it `CreateLogMessage`.
 
-````C#
+```C#
         [Fact]
         public void CreateLogMessage()
         {
@@ -388,7 +388,7 @@ We will be testing this method which requires a string and a DateTime as paramet
 
         }
 
-
+```
 
 
 Create DateTime
