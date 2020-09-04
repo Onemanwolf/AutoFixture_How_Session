@@ -284,8 +284,7 @@ Nice work now we have a test that is less brittle and use anonymous data instead
 > "For input where the value holds a particular meaning in the context of the SUT,
 > you will still need to hand-pick values as always. E.g. if the input is expected to
 > be an XML string conforming to a particular schema ,a GUID string makes no sense"
-> _**Mark Seemann**_
-> [Blog](https://blog.ploeh.dk/2009/03/05/ConstrainedNon-Determinism)
+> _**Mark Seemann**_ > [Blog](https://blog.ploeh.dk/2009/03/05/ConstrainedNon-Determinism)
 
 _If you haven't now would be a good time to Install NuGet Package AutoFixture.SeedExtensions_
 
@@ -650,7 +649,6 @@ public class LogMessage
 
 1. Lets create a new test Class in the test project just to play with some examples and call it `SequenceDemoShould.cs`.
 
-
 ```C#
          public class SequenceDemoShould
     {
@@ -675,8 +673,7 @@ public class LogMessage
         }
 ```
 
-Autofixture be default adds a count of 3 we can specify and  count by adding count number to the `CreateMany<string>(6);`
-
+Autofixture be default adds a count of 3 we can specify and count by adding count number to the `CreateMany<string>(6);`
 
 ```C#
 
@@ -712,6 +709,7 @@ We can also add string to an existing list with the `fixture.AddManyTo(list);` m
 
         }
 ```
+
 We can also control the count by adding
 
 ```C#
@@ -729,7 +727,7 @@ We can also control the count by adding
         }
 ```
 
-We can also use a delegate to set to value
+We can also use a delegate to set the value of items added to the list.
 
 ```C#
         [Fact]
@@ -747,5 +745,135 @@ We can also use a delegate to set to value
         }
 ```
 
+## Complex Object Creation
 
-We can create objects
+Lets explore object creation with AutoFixture but first we will need a test class so lets create a test class called `ComplexObjectCreationShould`
+
+```C#
+        public class ComplexObjectCreationShould
+        {
+
+        }
+
+```
+
+Add a new test method `CreateObject` to our test class.
+
+We can create objects and provide values for construction.
+
+```C#
+        [Fact]
+        public void CreateObject()
+        {
+            var fixture = new Fixture();
+            var emailMessage = fixture.Create<EmailMessage>();
+
+            emailMessage.Should().NotBeNull();
+        }
+```
+
+Add a new test method `CreateComplexObject` to our test class.
+
+We can create complex object let create a new test method to demostrate that.
+
+```C#
+        [Fact]
+        public void CreateComplexObject()
+        {
+            var fixture = new Fixture();
+            Order order = fixture.Create<Order>();
+
+            order.Should().NotBeNull();
+
+        }
+
+```
+
+Add a new test method `CreateObject` to our test class.
+We can customize object creation lets explore the different method
+
+```C#
+ [Fact]
+        public void CreateCustomObjects()
+        {
+            var fixture = new Fixture();
+
+            Product product = fixture.Create<Product>();
+
+        }
+
+```
+
+But the test failed why if we examine the code will see we have a constraint that is not being meet by the anonymous object we created.
+
+We can address this issue with the `fixture.Inject<string>("PDO");`
+
+```C#
+[Fact]
+        public void CreateCustomObjects()
+        {
+            var fixture = new Fixture();
+            fixture.Inject<string>("PDO");
+            Product product = fixture.Create<Product>();
+
+        }
+
+```
+But when we debug the test we can see the `"PDO"` assignment to e
+
+
+
+```C#
+
+[Fact]
+        public void CreateCustomObjectsWithProps()
+        {
+            var fixture = new Fixture();
+            fixture.Inject(new Product
+            {
+                Id = 1,
+                ProductCode = "PDO",
+                ProductDate = DateTime.Now
+
+            });
+            Product product = fixture.Create<Product>();
+
+        }
+
+```
+
+If we need to make sure we get a constant value assigned we can use the `fixture.Freeze<>()` Method
+
+```C#
+         [Fact]
+        public void FreezingValues()
+        {
+            var fixture = new Fixture();
+
+            var id = fixture.Freeze<int>();
+            var customerName = fixture.Freeze<string>("CustomerName");
+
+            var sut = fixture.Create<Order>();
+
+            Assert.Equal(id + "-" + customerName, sut.ToString());
+
+        }
+
+```
+
+We can Get even more control using the fluent `Build` pipeline and with can determine if a property is set or not set during the build, so lets create a new test method to try this out called `OmitSettingDuringBuild`.
+
+```C#
+        [Fact]
+        public void OmitSettingDuringBuild()
+        {
+            var fixture = new Fixture();
+
+            var product = fixture.Build<Product>()
+                                 .Without<string>(x => x.ProductCode)
+                                 .Create();
+
+            product.ProductCode.Should().BeNull();
+        }
+
+```
