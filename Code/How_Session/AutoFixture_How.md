@@ -819,9 +819,8 @@ We can address this issue with the `fixture.Inject<string>("PDO");`
         }
 
 ```
+
 But when we debug the test we can see the `"PDO"` assignment to e
-
-
 
 ```C#
 
@@ -877,3 +876,136 @@ We can Get even more control using the fluent `Build` pipeline and with can dete
         }
 
 ```
+
+We can Omit all properties if we need to by using the `.OmitAutoProperties()` let create a test method and see it in action.
+
+```C#
+
+[Fact]
+        public void OmitAllProperties()
+        {
+            var fixture = new Fixture();
+
+            var product = fixture.Build<Product>()
+                                 .OmitAutoProperties()
+                                 .Create();
+
+            product.ProductCode.Should().BeNull();
+
+        }
+
+```
+
+We can set properties at build time using the `..With(x => x.ProductCode, "PDO")`
+lets create a test method called `CustomizeBuild` to try this out.
+
+
+```C#
+        [Fact]
+        public void CustomizeBuild()
+        {
+
+            var fixture = new Fixture();
+
+            var product = fixture.Build<Product>()
+                                 .With(x => x.ProductCode, "PDO")
+                                 .Create();
+
+            product.ProductCode.Should().Be("PDO");
+        }
+
+```
+
+
+We can preform actions on the object during build with the `.Do(x => x.OrderItems.Add(orderItem)` method like adding things to a list as in our next test method called `CustomizeBuildWithDo`.
+
+```C#
+         [Fact]
+        public void CustomizeBuildWithDo()
+        {
+
+            var fixture = new Fixture();
+            var orderItem = fixture.Create<OrderItem>();
+            var order = fixture.Build<Order>()
+                                 .With(x => x.Id, 23)
+                                 .Do(x => x.OrderItems.Add(orderItem))
+                                 .Create();
+
+            order.Id.Should().Be(23);
+        }
+
+```
+We can setup Customization prior to creation with the `fixture.Customize<T>()` are next test method we create called `CustomizeObjectsBuildWithCustomize` we can see this in action.
+
+After we setup the Customize we then can create the object according to the prescribe customization we created each time a Order is created it will use the or customization
+
+```C#
+        [Fact]
+        public void CustomizeObjectsBuildWithCustomize()
+        {
+            var fixture = new Fixture();
+            var orderItem = fixture.Create<OrderItem>();
+            fixture.Customize<Order>(o => o.With(x => x.Id, 23)
+                                           .With(x => x.CustomerId, 2)
+                                           .Do(x => x.OrderItems.Add(orderItem)));
+
+
+            var order = fixture.Create<Order>();
+            var order1 = fixture.Create<Order>();
+
+
+
+        }
+
+```
+
+Debug test and observe the two orders.
+
+
+We seen the power of AutoFixture but lets take a look at what is going on in the background.
+
+## Fixture Pipeline
+
+
+Specimen
+
+An individual value for a specific data type used as an example of that data type.
+
+
+For example 1 and 2 are specimens of int.
+
+In the AutoFixture we can see this in the
+
+
+```C#
+public interface ISpecimenBuilder
+{
+        object Create(object request, ISpecimenContext context)
+}
+
+```
+
+### Customizations
+
+- Collection of ISpecimenBuilder
+- "Override" default specimens builders
+- Prebuilt & custom
+
+### Default Specimen builder
+
+- Engine
+- Preconfigured in a Fixture instance
+- Like when we create a Guid with the GuidGenerator specimen builder
+
+Residue Collectors
+
+- Lowest priority specimens builders
+- Fall-back in no other matches
+- Last chance before exception
+
+
+A request goes through a chain of ISpecimenBuilders until a specimen is generated.
+
+The request processing then stops and the specimen is returned to the test code.
+
+![alt text](https://github.com/kwkraus/HOW-Sessions/blob/master/sessions/asp-net-core/docs/images/request-delegate-pipeline.png?raw=true "Request Pipeline")
