@@ -10,6 +10,9 @@ namespace DemoCode
     {
         public int Id { get; set; }
         private string productCode;
+        public string ProductName { get; set; }
+        public string ProductDescripton { get; set; }
+        public DateTime ProductDate { get; set; }
 
         public string ProductCode
         {
