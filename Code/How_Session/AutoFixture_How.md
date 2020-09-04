@@ -1003,3 +1003,71 @@ A request goes through a chain of ISpecimenBuilders until a specimen is generate
 The request processing then stops and the specimen is returned to the test code.
 
 ![alt text](https://github.com/Onemanwolf/AutoFixture_How_Session/blob/master/Code/How_Session/images/PipelineImage.png?raw=true 'Request Pipeline')
+
+
+
+Lets create  custome fixture
+
+```C#
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using AutoFixture.Kernel;
+using System.Reflection;
+
+namespace DemoCode.Test
+{
+    public class CustomProductCodeGenerator : ISpecimenBuilder
+    {
+        public object Create(object request, ISpecimenContext context)
+        {
+            var propertyInfo = request as PropertyInfo;
+
+            if (propertyInfo is null)
+            {
+
+                return new NoSpecimen();
+            }
+
+            var isProductCode = propertyInfo.Name.Contains("ProductCode");
+            var isString = propertyInfo.PropertyType == typeof(string);
+
+
+            if(isProductCode && isString)
+            {
+                return RandomProductCode();
+            }
+
+            return new NoSpecimen();
+        }
+
+        private string RandomProductCode()
+        {
+            return "PDO";
+        }
+    }
+}
+
+```
+
+Now implement our new customization.
+
+
+```C#
+[Fact]
+        public void CustomizeAddCustomeFixture()
+        {
+            var fixture = new Fixture();
+
+            fixture.Customizations.Add(new CustomProductCodeGenerator());
+
+
+            var product = fixture.Create<Product>();
+
+
+
+
+        }
+
+```
