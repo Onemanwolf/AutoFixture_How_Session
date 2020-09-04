@@ -1004,9 +1004,11 @@ The request processing then stops and the specimen is returned to the test code.
 
 ![alt text](https://github.com/Onemanwolf/AutoFixture_How_Session/blob/master/Code/How_Session/images/PipelineImage.png?raw=true 'Request Pipeline')
 
+Lets create customization fixture.
 
+1. Add a new class to the test project call it `CustomProductCodeGenerator`.
 
-Lets create  custome fixture
+2. Now Paste the below code into the class you can see we are using reflection and the AutoFixture Kernel.
 
 ```C#
 
@@ -1053,6 +1055,8 @@ namespace DemoCode.Test
 
 Now implement our new customization.
 
+Add and new test method to the `ComplexObjectCreationShould` and call it
+`CustomizeAddCustomeFixture`.
 
 ```C#
 [Fact]
