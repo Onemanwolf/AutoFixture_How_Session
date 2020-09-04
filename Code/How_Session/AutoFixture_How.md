@@ -503,7 +503,7 @@ Add Enum MessageType to the LogMessage Class
             var fixture = new Fixture();
             // DateTime logTime = new DateTime(2020, 9, 3);
             DateTime logTime = fixture.Create<DateTime>();
-            //LogMessage result = sut.Create("I want a sandwhich", logTime);
+            //LogMessage result = sut.Create("I want a sandwich", logTime);
 
             //Add Id Guid
             var Id = fixture.Create<Guid>();
@@ -1056,7 +1056,7 @@ namespace DemoCode.Test
 Now implement our new customization.
 
 Add and new test method to the `ComplexObjectCreationShould` and call it
-`CustomizeAddCustomeFixture`.
+`CustomizeAddCustomFixture`.
 
 ```C#
 [Fact]
