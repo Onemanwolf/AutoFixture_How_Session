@@ -899,7 +899,6 @@ We can Omit all properties if we need to by using the `.OmitAutoProperties()` le
 We can set properties at build time using the `..With(x => x.ProductCode, "PDO")`
 lets create a test method called `CustomizeBuild` to try this out.
 
-
 ```C#
         [Fact]
         public void CustomizeBuild()
@@ -915,7 +914,6 @@ lets create a test method called `CustomizeBuild` to try this out.
         }
 
 ```
-
 
 We can preform actions on the object during build with the `.Do(x => x.OrderItems.Add(orderItem)` method like adding things to a list as in our next test method called `CustomizeBuildWithDo`.
 
@@ -935,6 +933,7 @@ We can preform actions on the object during build with the `.Do(x => x.OrderItem
         }
 
 ```
+
 We can setup Customization prior to creation with the `fixture.Customize<T>()` are next test method we create called `CustomizeObjectsBuildWithCustomize` we can see this in action.
 
 After we setup the Customize we then can create the object according to the prescribe customization we created each time a Order is created it will use the or customization
@@ -961,21 +960,17 @@ After we setup the Customize we then can create the object according to the pres
 
 Debug test and observe the two orders.
 
-
 We seen the power of AutoFixture but lets take a look at what is going on in the background.
 
 ## Fixture Pipeline
-
 
 Specimen
 
 An individual value for a specific data type used as an example of that data type.
 
-
 For example 1 and 2 are specimens of int.
 
 In the AutoFixture we can see this in the
-
 
 ```C#
 public interface ISpecimenBuilder
@@ -1003,9 +998,8 @@ Residue Collectors
 - Fall-back in no other matches
 - Last chance before exception
 
-
 A request goes through a chain of ISpecimenBuilders until a specimen is generated.
 
 The request processing then stops and the specimen is returned to the test code.
 
-![alt text](https://github.com/kwkraus/HOW-Sessions/blob/master/sessions/asp-net-core/docs/images/request-delegate-pipeline.png?raw=true "Request Pipeline")
+![alt text](https://github.com/Onemanwolf/AutoFixture_How_Session/blob/master/Code/How_Session/images/PipelineImage.png?raw=true 'Request Pipeline')
