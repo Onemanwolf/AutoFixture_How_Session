@@ -601,12 +601,13 @@ public class LogMessage
 ```#
                 using System.Net.Mail;
 ```
+4. Install NuGet Package AutoFixture.SeedExtensions Will be used to seed the Email message with a string if you don't install you get a compile error.
 
-4. Add the to address for the email with by first creating it with `MailAddress toAddress = fixture.Create<MailAddress>();`.
+5. Add the to address for the email with by first creating it with `MailAddress toAddress = fixture.Create<MailAddress>();`.
 
-5. Now add the from address in the same way `MailAddress fromAddress = fixture.Create<MailAddress>();`
+6. Now add the from address in the same way `MailAddress fromAddress = fixture.Create<MailAddress>();`
    `
-6. Now add the rest of the constructor parameters Id with ` var Id = fixture.Create<Guid>();` the subject with `and the message body with` finally the IsImportant bool with `` now assert all your values.
+7. Now add the rest of the constructor parameters Id with ` var Id = fixture.Create<Guid>();` the subject with `and the message body with` finally the IsImportant bool with `` now assert all your values.
 
 > Challenge try different ways of using the fixture how could you improve this test?
 
