@@ -1046,7 +1046,7 @@ namespace DemoCode.Test
         }
 
         private string RandomProductCode()
-        {
+        {  // code to produce Random Product Code  goes here ..
             return "PDO";
         }
     }
