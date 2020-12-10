@@ -1076,3 +1076,89 @@ Add and new test method to the `ComplexObjectCreationShould` and call it
         }
 
 ```
+
+
+##Auto Fixture Abstract Types
+
+AutoFixture creates an object graph based on the public constructors of the types contained in that object graph.
+
+This works well until you have a type that has no public constructor.
+
+When you have a class that has a dependency on an Interface we handle this situatuion with the `Register` Method like in this example `fixture.Register<Interface>(() => new ConcertImplementation());`
+
+For the below exercise create a interface we wiil place all of the memebers inside for demo purposes, add a interface called IMyInterface to DemoCode Project.
+
+Replace the code with the following
+
+```C#
+
+ public interface IMyInterface
+    {
+        string results { get; set; }
+        void Dosomething();
+    }
+
+    public class Myclass : IMyInterface
+    {
+        public string results { get; set; }
+
+        public void Dosomething()
+        {
+            results = "Did something";
+        }
+    }
+
+    public class MyClasseImplementsMyInterface
+    {
+
+        public IMyInterface _myClass;
+
+        public MyClasseImplementsMyInterface(IMyInterface myclass)
+        {
+            _myClass = myclass;
+        }
+
+        public string DoSomething()
+        {
+           _myClass.Dosomething();
+         return   _myClass.results;
+        }
+    }
+```
+
+
+
+1. Create test Class to the Test Project Called `AutoFixtureRegisterShould`.
+
+2. Add Test Method `RegisterInterface`
+
+```C#
+
+        [Fact]
+        public void RegisterInterface()
+        {
+        
+        }
+
+```
+
+3. Add this code to the test method.
+
+```C#
+
+            var fixture = new Fixture();
+            fixture.Register<IMyInterface>(() => fixture.Create<Myclass>());
+            var myClass = fixture.Create<MyClasseImplementsMyInterface>();
+            
+            var results = myClass.DoSomething();
+
+            results.Should().Be("Did something");
+
+```
+
+Now you can have AutoFixture Creeate the Dependency behaving much like a Dependency injection container.
+
+
+
+
+
