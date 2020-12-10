@@ -1078,7 +1078,7 @@ Add and new test method to the `ComplexObjectCreationShould` and call it
 ```
 
 
-##Auto Fixture Abstract Types
+## Auto Fixture Abstract Types
 
 AutoFixture creates an object graph based on the public constructors of the types contained in that object graph.
 
