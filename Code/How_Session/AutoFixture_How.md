@@ -62,7 +62,7 @@ You can add the packages to the project file by double clicking it and pasting i
 ```XML
 
 <ItemGroup>
-         <PackageReference Include="AutoFixture" Version="4.13.1" />
+      <PackageReference Include="AutoFixture" Version="4.15.0" />
          <PackageReference Include="FluentAssertions" Version="5.10.3" />
 
 
@@ -192,7 +192,7 @@ AutoFixture is independent of the testing framework or test runner
 - Idioms
 - Idimos.FsCheck
 
-You can create anonymous teat data without having to manually create Fixture instance.
+You can create anonymous test data without having to manually create Fixture instance.
 
 Example;
 
@@ -1137,7 +1137,7 @@ Replace the code with the following
         [Fact]
         public void RegisterInterface()
         {
-        
+
         }
 
 ```
@@ -1149,7 +1149,7 @@ Replace the code with the following
             var fixture = new Fixture();
             fixture.Register<IMyInterface>(() => fixture.Create<Myclass>());
             var myClass = fixture.Create<MyClasseImplementsMyInterface>();
-            
+
             var results = myClass.DoSomething();
 
             results.Should().Be("Did something");
