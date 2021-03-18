@@ -316,7 +316,7 @@ sut.Fullname.Should().Be(firstName + ' ' + lastName)
 
 ```C#
         var fixture = new Fixture();`
-        var firstName = fixture.Create<decimal>();
+        var myDecimal = fixture.Create<decimal>();
 
 ```
 
