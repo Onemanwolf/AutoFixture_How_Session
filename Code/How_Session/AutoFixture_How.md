@@ -6,7 +6,7 @@
 
 ### AutoFixture Defined
 
-AutoFixture
+#AutoFixture
 AutoFixture is an open source library for .NET designed to minimize the 'Arrange' phase of your unit tests in order to maximize maintainability. Its primary goal is to allow developers to focus on what is being tested rather than how to setup the test scenario, by making it easier to create object graphs containing test data.
 
 ## Why Use AutoFixture
